@@ -1,3 +1,2 @@
-python3 verhor_game_gui.py rows cols
 
-python verhor_game_gui.py 
+python GUI.py
