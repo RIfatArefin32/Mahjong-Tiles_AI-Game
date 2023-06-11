@@ -104,6 +104,7 @@ class Board(tkinter.Frame):
     def perform_move_2(self, row, col):
         if self.two_player == False:
             self.perform_move(row, col)
+            self.after(60)
             if self.moved == True:
                 if not self.game.game_over(self.vertical):
                     (row, col), best_value, total_leaves = \
