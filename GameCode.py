@@ -194,9 +194,6 @@ class MahjongGame(object):
             new_game.perform_move(move[0], move[1], vertical)
             yield (move, new_game)
 
-    def get_random_move(self, vertical):
-        return random.choice(list(self.legal_moves(vertical)))
-
     def get_best_move(self, vertical, limit):
         self.first_move = vertical
         self.max_limit = limit
@@ -214,44 +211,38 @@ class MahjongGame(object):
         if depth > self.max_limit or state.game_over(vertical):
             self.leaf_counter += 1
             return state.evaluate_board(state, vertical)
-
         v = -np.inf
         self.best_move = next(state.legal_moves(vertical))
         for new_move, new_state in state.successors(vertical):
+            #print('new move: ', new_move)
             new_vertical = not vertical
-            new_v = np.max(
-                [v, self.min_value(new_state, new_vertical, alpha, beta, depth+1)])
-
+            tmp = self.min_value(new_state, new_vertical, alpha, beta, depth+1)
+            #print('temp v= ', tmp)
+            new_v = np.max([v, tmp])
+            #print('new and old v: ', new_v, v)
             if new_v > v:
                 self.best_move = new_move
-
             v = new_v
-
+            #print('best move ', self.best_move, v)
             if v >= beta:
                 return v
             alpha = np.max([alpha, v])
-
+        
         return v
+
 
     def min_value(self, state, vertical, alpha, beta, depth):
         if depth > self.max_limit or state.game_over(vertical):
             self.leaf_counter += 1
-            return state.evaluate_board(state, not vertical)
+            # print('leaf= ', self.leaf_counter)
+            x = state.evaluate_board(state, not vertical)
+            # print('value = ', x)
+            return x
 
-        v = np.inf
-        for _, new_state in state.successors(vertical):
-            new_vertical = not vertical
-            v = np.min([v, self.max_value(
-                new_state, new_vertical, alpha, beta, depth+1)])
-
-            if v <= alpha:
-                return v
-            beta = np.min([beta, v])
-
-        return v
 
     def evaluate_board(self, state, vertical):
         max_moves = list(state.legal_moves(vertical))
         min_moves = list(state.legal_moves(not vertical))
-
+        # print('max moves:\n', max_moves)
+        # print('min moves:\n', min_moves)
         return len(max_moves) - len(min_moves)
