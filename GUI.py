@@ -104,11 +104,11 @@ class Board(tkinter.Frame):
     def perform_move_2(self, row, col):
         if self.two_player == False:
             self.perform_move(row, col)
-            self.after(60)
+            self.after(80)
             if self.moved == True:
                 if not self.game.game_over(self.vertical):
-                    (row, col), best_value, total_leaves = \
-                        self.game.get_best_move(self.vertical, 1)
+                    (row, col), best_value, total_leaves = self.game.get_best_move(self.vertical, 1)
+                    # 
                     self.perform_move(row, col)
 
         elif self.two_player == True:
@@ -254,15 +254,13 @@ class MahjongGui(tkinter.Frame):
         
     def perform_best_move(self):
         if not self.game.game_over(self.board.vertical) and self.chance:
-            (row, col), best_value, total_leaves = \
-                self.game.get_best_move(self.board.vertical, 1)
+            (row, col), best_value, total_leaves = self.game.get_best_move(self.board.vertical, 1)
             self.board.perform_move_2(row, col)
             self.chance = False
 
         if self.board.two_player == False and self.chance:
             if not self.game.game_over(self.board.vertical):
-                (row, col), best_value, total_leaves = \
-                    self.game.get_best_move(self.board.vertical, 1)
+                (row, col), best_value, total_leaves = self.game.get_best_move(self.board.vertical, 1)
                 self.board.perform_move_2(row, col)
                 self.chance = False
 
